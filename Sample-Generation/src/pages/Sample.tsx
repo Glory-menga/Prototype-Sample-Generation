@@ -4,8 +4,11 @@ const Sample = () => {
     return (
         <>
             <Nav />
-            <div>
-                <h1>Sample</h1>
+            <div className='container'>
+                <div className='sample'>
+                    <h1>Here is the generated sample:</h1>
+                    <div className='sample-audio'>Sample</div>
+                </div>
             </div>
         </>
     );
