@@ -1,0 +1,60 @@
+/* Nav */
+nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  width: 98%;
+  height: 50px;
+}
+ul{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+li{
+  list-style: none;
+}
+.logo a{
+  font-size: 20px;
+  font-weight: 600;
+}
+/* Nav */
+/* Home */
+.welcome{
+  display: flex;
+  flex-direction: column;
+  padding-top: 4vh;
+  margin: 0 auto;
+  width: 98%;
+}
+.txt-info{
+  width: 50%;
+}
+.info{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+.btn-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.showreel{
+  margin-top: 50px;
+  height: 400px;
+  width: 100%;
+  object-fit: cover;
+  overflow-y: hidden;
+}
+/* Home */
+/* Generate */
+.txt-generation{
+  margin: 30px auto 0 auto;
+  width: 98%;
+}
+/* Generate */
