@@ -1,12 +1,22 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Generate from './pages/Generate';
+import Sample from './pages/Sample';
+import NotFound from './pages/NotFound';
 import './App.css'
 
 function App() {
 
   return (
-    <>
-      <div>
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/generate" element={<Generate />} />
+        <Route path="/sample" element={<Sample />} />
+        {/*Error Page*/}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   )
 }
 
