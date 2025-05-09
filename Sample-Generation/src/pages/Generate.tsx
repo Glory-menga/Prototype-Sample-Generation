@@ -3,18 +3,33 @@ import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Generate = () => {
   const [prompt, setPrompt] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim() === '') {
       toast.error('Please enter a prompt');
       return;
     }
-    toast.success('Prompt submitted');
-    console.log('Prompt submitted:', prompt);
+
+    try {
+      toast.info('Generating sample...');
+      const res = await axios.post('http://localhost:5000/generate', { prompt });
+
+      // Save sample URL in localStorage
+      sessionStorage.setItem('generatedSampleUrl', res.data.audio);
+
+      toast.success('Sample generated!');
+      navigate('/sample');
+    } catch (err) {
+      toast.error('Error generating sample');
+      console.error(err);
+    }
   };
 
   return (
