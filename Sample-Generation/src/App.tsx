@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Generate from './pages/Generate';
 import Sample from './pages/Sample';
+import Loading from './pages/Loading';
 import NotFound from './pages/NotFound';
 import './App.css'
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/generate" element={<Generate />} />
         <Route path="/sample" element={<Sample />} />
+        <Route path="/loading" element={<Loading />} />
         {/*Error Page*/}
         <Route path="*" element={<NotFound />} />
       </Routes>

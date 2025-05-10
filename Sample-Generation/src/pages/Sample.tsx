@@ -9,7 +9,7 @@ const Sample = () => {
   useEffect(() => {
     const url = sessionStorage.getItem('generatedSampleUrl');
     if (!url) {
-      navigate('/generate'); 
+      navigate('/generate');
     } else {
       setSampleUrl(url);
     }
