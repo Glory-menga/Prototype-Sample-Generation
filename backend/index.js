@@ -17,20 +17,48 @@ app.post("/generate", async (req, res) => {
   const { prompt } = req.body;
 
   try {
+    // Step 1: Clean prompt using LLaMA-3
+    const cleanedPromptResponse = await replicate.run(
+      "meta/meta-llama-3-70b-instruct",
+      {
+        input: {
+          prompt: `Rewrite the following music prompt so it is grammatically correct and musically descriptive. Respond with only the rewritten prompt.\n\nPrompt: "${prompt}"`,
+          system_prompt: "You are a helpful assistant that rewrites musical prompts in clear, descriptive English.",
+          max_new_tokens: 60,
+        },
+      }
+    );
+
+    const cleanedPrompt = cleanedPromptResponse.join("").trim().replace(/^["']+|["'.]+$/g, '')
+
+    // Step 2: Generate sample title
+    const titleResponse = await replicate.run(
+      "meta/meta-llama-3-70b-instruct",
+      {
+        input: {
+          prompt: `Give me only a short and creative music title (maximum 5 words) based on the following prompt. No explanation. Just the title.\n\nPrompt: "${cleanedPrompt}"`,
+          system_prompt: "You are a creative assistant that creates titles for music samples.",
+          max_new_tokens: 20,
+        },
+      }
+    );
+
+    const title = titleResponse.join("").trim().replace(/^["']+|["'.]+$/g, '')
+
+    // Step 3: Generate music sample using cleaned prompt
     const input = {
-      prompt,
-      model_version: "stereo-large", // you can also try "large" or "melody-large"
-      duration: 16, // duration in seconds (your request)
+      prompt: cleanedPrompt,
+      model_version: "stereo-large",
+      duration: 16,
       output_format: "mp3",
-      normalization_strategy: "peak", // keeps volume normalized
+      normalization_strategy: "peak",
     };
 
     const prediction = await replicate.predictions.create({
-      version: "671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb", // MusicGen official
+      version: "671ac645ce5e552cc63a54a2bbff63fcf798043055d2dac5fc9e36a837eedcfb",
       input,
     });
 
-    // Poll until the prediction is ready
     let result = prediction;
     while (
       result.status !== "succeeded" &&
@@ -42,16 +70,20 @@ app.post("/generate", async (req, res) => {
     }
 
     if (result.status === "succeeded") {
-      res.json({ audio: result.output });
+      res.json({
+        audio: result.output,
+        prompt: cleanedPrompt,
+        title: title,
+      });
     } else {
-      res.status(500).json({ error: "Prediction failed", status: result.status });
+      res.status(500).json({ error: "Sample generation failed", status: result.status });
     }
   } catch (err) {
     console.error("Error:", err.message);
-    res.status(500).json({ error: "Something went wrong with Replicate" });
+    res.status(500).json({ error: "Something went wrong during generation" });
   }
 });
 
 app.listen(5000, () => {
-  console.log("🎵 MusicGen backend running on http://localhost:5000");
+  console.log("🎵 AI model running on http://localhost:5000");
 });

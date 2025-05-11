@@ -8,25 +8,27 @@ const Loading = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const prompt = searchParams.get('prompt');
-    if (!prompt) {
+  const prompt = searchParams.get('prompt');
+  if (!prompt) {
+    navigate('/generate');
+    return;
+  }
+
+  const generateSample = async () => {
+    try {
+      const res = await axios.post('http://localhost:5000/generate', { prompt });
+      sessionStorage.setItem('generatedSampleUrl', res.data.audio);
+      sessionStorage.setItem('generatedPrompt', res.data.prompt);
+      sessionStorage.setItem('generatedTitle', res.data.title);
+      navigate('/sample');
+    } catch (err) {
+      console.error(err);
       navigate('/generate');
-      return;
     }
+  };
 
-    const generateSample = async () => {
-      try {
-        const res = await axios.post('http://localhost:5000/generate', { prompt });
-        sessionStorage.setItem('generatedSampleUrl', res.data.audio);
-        navigate('/sample');
-      } catch (err) {
-        console.error(err);
-        navigate('/generate');
-      }
-    };
-
-    generateSample();
-  }, []);
+  generateSample();
+}, []);
 
   return (
     <div className='container'>

@@ -16,7 +16,7 @@ const Sphere = () => {
   }), []);
 
   const geometry = useMemo(() => {
-    const geo = mergeVertices(new IcosahedronGeometry(1.3, 200));
+    const geo = mergeVertices(new IcosahedronGeometry(1.3, 100));
     geo.computeTangents();
     return geo;
   }, []);
@@ -52,7 +52,7 @@ const Sphere = () => {
 const Metaball = () => {
   return (
     <div style={{ width: "100%", height: "100vh" }}>
-      <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
         <Sphere />
         <OrbitControls />
       </Canvas>
