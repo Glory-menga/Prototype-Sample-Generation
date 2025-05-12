@@ -17,7 +17,7 @@ app.post("/generate", async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    // Step 1: Clean prompt using LLaMA-3
+    // Clean prompt
     const cleanedPromptResponse = await replicate.run(
       "meta/meta-llama-3-70b-instruct",
       {
@@ -31,7 +31,7 @@ app.post("/generate", async (req, res) => {
 
     const cleanedPrompt = cleanedPromptResponse.join("").trim().replace(/^["']+|["'.]+$/g, '')
 
-    // Step 2: Generate sample title
+    // Title Generation
     const titleResponse = await replicate.run(
       "meta/meta-llama-3-70b-instruct",
       {
@@ -45,7 +45,7 @@ app.post("/generate", async (req, res) => {
 
     const title = titleResponse.join("").trim().replace(/^["']+|["'.]+$/g, '')
 
-    // Step 3: Generate music sample using cleaned prompt
+    // Sample generation with corrected prompt
     const input = {
       prompt: cleanedPrompt,
       model_version: "stereo-large",

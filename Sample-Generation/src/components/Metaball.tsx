@@ -40,8 +40,6 @@ const Sphere = () => {
         clearcoat={1}
         ior={2.5}
         iridescence={1}
-        //@ts-ignore
-        silent
       />
       <ambientLight intensity={0.3} />
       <directionalLight position={[3, 5, 2]} intensity={1.2} />
