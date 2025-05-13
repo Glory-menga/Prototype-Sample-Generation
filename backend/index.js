@@ -22,8 +22,8 @@ app.post("/generate", async (req, res) => {
       "meta/meta-llama-3-70b-instruct",
       {
         input: {
-          prompt: `Rewrite the following music prompt so it is grammatically correct and musically descriptive. Respond with only the rewritten prompt.\n\nPrompt: "${prompt}"`,
-          system_prompt: "You are a helpful assistant that rewrites musical prompts in clear, descriptive English.",
+          prompt: `Rewrite this music prompt so it is grammatically correct and clearly describes a melody only (no drums or percussion). Respond with the corrected prompt only — no explanation, no intro, just the prompt:\n\n"${prompt}"`,
+          system_prompt: "You are a music AI assistant that rewrites prompts for generating melodies only — no beats or percussion.",
           max_new_tokens: 60,
         },
       }

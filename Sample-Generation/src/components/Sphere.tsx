@@ -41,10 +41,10 @@ const Sphere: React.FC = () => {
     <mesh ref={meshRef}>
       <sphereGeometry args={[1, 128, 128]} />
       <meshPhysicalMaterial
-        color="#000000"
+        color="#000"
         roughness={0}
-        metalness={1}
-        clearcoat={1}
+        metalness={10}
+        clearcoat={5}
         clearcoatRoughness={0}
       />
     </mesh>
