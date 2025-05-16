@@ -60,7 +60,31 @@ const EditAudio = () => {
               <OrbitControls />
             </Canvas>
           </div>
-
+          <div className='edit-audio'>
+            <div className='edit'>
+              <h2>140 BPM</h2>
+              <div className='bpm-slider'>
+                <p>slider</p>
+              </div>
+            </div>
+            <div className='edit'>
+              <h2>Reverb : OFF</h2>
+              <div className='reverb-toggle'>
+                <p>Toggle</p>
+              </div>
+            </div>
+            <div className='edit'>
+              <h2>Reverse : OFF</h2>
+              <div className='reverse-toggle'>
+                <p>Toggle</p>
+              </div>
+            </div><div className='edit'>
+              <h2>0 semitones</h2>
+              <div className='pitch-slider'>
+                <p>slider</p>
+              </div>
+            </div>
+          </div>
           <div className="test-sound">
             {sampleUrl && (
               <audio controls ref={audioRef} crossOrigin="anonymous">
