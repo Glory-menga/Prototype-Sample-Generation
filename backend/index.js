@@ -1,4 +1,3 @@
-import axios from 'axios';
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -12,24 +11,6 @@ app.use(express.json());
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
-});
-
-app.get('/proxy-audio', async (req, res) => {
-  const audioUrl = req.query.url;
-  if (!audioUrl) return res.status(400).send('Missing audio URL');
-
-  try {
-    const response = await axios.get(audioUrl, {
-      responseType: 'stream',
-    });
-
-    res.setHeader('Content-Type', 'audio/mpeg');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    response.data.pipe(res);
-  } catch (err) {
-    console.error('Proxy error:', err.message);
-    res.status(500).send('Failed to proxy audio');
-  }
 });
 
 app.post("/generate", async (req, res) => {

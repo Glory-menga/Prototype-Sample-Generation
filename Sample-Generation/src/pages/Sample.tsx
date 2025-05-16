@@ -9,9 +9,9 @@ const Sample = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = sessionStorage.getItem('generatedSampleUrl');
-    const title = sessionStorage.getItem('generatedTitle');
-    const prompt = sessionStorage.getItem('generatedPrompt');
+    const url = localStorage.getItem('generatedSampleUrl');
+    const title = localStorage.getItem('generatedTitle');
+    const prompt = localStorage.getItem('generatedPrompt');
 
     if (!url || !title || !prompt) {
       navigate('/generate');
