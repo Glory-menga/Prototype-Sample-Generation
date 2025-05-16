@@ -45,7 +45,7 @@ const Sphere: React.FC<SphereProps> = ({ analyser }) => {
       }
     }
 
-    const noiseStrength = 0.03; 
+    const noiseStrength = 0.02; 
 
     for (let i = 0; i < position.count; i++) {
       const ix = i * 3;

@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
 import Sphere from '../components/Sphere';
 import { useNavigate } from 'react-router-dom';
-import Audio from '../assets/audio/test-audio.mp3';
+import { toast } from 'react-toastify';
 
 const EditAudio = () => {
   const navigate = useNavigate();
@@ -11,9 +11,24 @@ const EditAudio = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [sampleUrl, setSampleUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (audioRef.current && !analyserRef.current) {
+    const url = sessionStorage.getItem('generatedSampleUrl');
+
+    if (!url) {
+      toast.error("Generate a sample first to use the Metaball page.");
+      navigate('/generate');
+      return;
+    }
+
+    // Proxy the URL to bypass CORS
+    const proxiedUrl = `http://localhost:5000/proxy-audio?url=${encodeURIComponent(url)}`;
+    setSampleUrl(proxiedUrl);
+  }, [navigate]);
+
+  useEffect(() => {
+    if (audioRef.current && sampleUrl && !analyserRef.current) {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const analyserNode = audioContext.createAnalyser();
       analyserNode.fftSize = 256;
@@ -26,7 +41,7 @@ const EditAudio = () => {
       sourceRef.current = sourceNode;
       setAnalyser(analyserNode);
     }
-  }, []);
+  }, [sampleUrl]);
 
   return (
     <>
@@ -45,10 +60,13 @@ const EditAudio = () => {
               <OrbitControls />
             </Canvas>
           </div>
+
           <div className="test-sound">
-            <audio controls ref={audioRef}>
-              <source src={Audio} type="audio/mp3" />
-            </audio>
+            {sampleUrl && (
+              <audio controls ref={audioRef} crossOrigin="anonymous">
+                <source src={sampleUrl} type="audio/mp3" />
+              </audio>
+            )}
           </div>
         </div>
       </div>
