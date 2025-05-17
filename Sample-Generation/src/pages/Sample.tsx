@@ -9,18 +9,32 @@ const Sample = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = localStorage.getItem('generatedSampleUrl');
-    const title = localStorage.getItem('generatedTitle');
-    const prompt = localStorage.getItem('generatedPrompt');
-
-    if (!url || !title || !prompt) {
+    const sampleRaw = localStorage.getItem('sample');
+    if (!sampleRaw) {
       navigate('/generate');
-    } else {
-      setSampleUrl(url);
-      setTitle(title);
-      setPrompt(prompt);
+      return;
+    }
+
+    try {
+      const sample = JSON.parse(sampleRaw);
+      if (!sample.url || !sample.title || !sample.prompt) {
+        navigate('/generate');
+        return;
+      }
+
+      setSampleUrl(sample.url);
+      setTitle(sample.title);
+      setPrompt(sample.prompt);
+    } catch (e) {
+      console.error('Failed to parse sample from localStorage');
+      navigate('/generate');
     }
   }, []);
+
+  const handleClear = () => {
+    localStorage.removeItem('sample');
+    navigate('/generate');
+  };
 
   return (
     <>
@@ -31,6 +45,9 @@ const Sample = () => {
           {prompt && <p><strong>Prompt:</strong> {prompt}</p>}
           <div className='sample-audio'>
             {sampleUrl && <audio controls src={sampleUrl} />}
+          </div>
+          <div style={{ marginTop: '20px' }}>
+            <button onClick={handleClear}>Generate New Sample</button>
           </div>
         </div>
       </div>
