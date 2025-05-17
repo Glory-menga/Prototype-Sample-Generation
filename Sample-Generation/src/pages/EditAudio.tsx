@@ -3,7 +3,8 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
 import Sphere from '../components/Sphere';
 import { useNavigate } from 'react-router-dom';
-import Audio from '../assets/audio/test-audio.mp3';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditAudio = () => {
   const navigate = useNavigate();
@@ -11,6 +12,30 @@ const EditAudio = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [proxyUrl, setProxyUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sampleRaw = localStorage.getItem('sample');
+    if (!sampleRaw) {
+      toast.error('Generate a sample first before using the Metaball editor!');
+      navigate('/generate');
+      return;
+    }
+
+    try {
+      const sample = JSON.parse(sampleRaw);
+      if (!sample.url) {
+        toast.error('Invalid sample data. Please generate a new sample.');
+        navigate('/generate');
+        return;
+      }
+      // 🔁 Use backend proxy to load the audio safely
+      setProxyUrl(`http://localhost:5000/proxy-audio?url=${encodeURIComponent(sample.url)}`);
+    } catch (err) {
+      toast.error('Something went wrong. Please generate a new sample.');
+      navigate('/generate');
+    }
+  }, []);
 
   useEffect(() => {
     if (audioRef.current && !analyserRef.current) {
@@ -26,10 +51,11 @@ const EditAudio = () => {
       sourceRef.current = sourceNode;
       setAnalyser(analyserNode);
     }
-  }, []);
+  }, [proxyUrl]);
 
   return (
     <>
+      <ToastContainer />
       <div className="container">
         <div className="edit-audio-wrapper">
           <div className="go-back">
@@ -45,10 +71,13 @@ const EditAudio = () => {
               <OrbitControls />
             </Canvas>
           </div>
+
           <div className="test-sound">
-            <audio controls ref={audioRef}>
-              <source src={Audio} type="audio/mp3" />
-            </audio>
+            {proxyUrl && (
+              <audio controls ref={audioRef} crossOrigin="anonymous">
+                <source src={proxyUrl} type="audio/mp3" />
+              </audio>
+            )}
           </div>
         </div>
       </div>

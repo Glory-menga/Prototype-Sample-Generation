@@ -17,14 +17,18 @@ const Sample = () => {
 
     try {
       const sample = JSON.parse(sampleRaw);
+
+      // If any required field is missing, redirect
       if (!sample.url || !sample.title || !sample.prompt) {
         navigate('/generate');
         return;
       }
 
+      // Use values directly from localStorage
       setSampleUrl(sample.url);
       setTitle(sample.title);
       setPrompt(sample.prompt);
+
     } catch (e) {
       console.error('Failed to parse sample from localStorage');
       navigate('/generate');
