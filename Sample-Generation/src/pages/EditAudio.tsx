@@ -13,6 +13,15 @@ const EditAudio = () => {
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [proxyUrl, setProxyUrl] = useState<string | null>(null);
+  const [tempo, setTempo] = useState<string>('normal');
+  
+  const tempoOptions = [
+    { value: 'very slow', rate: 0.5 },
+    { value: 'slow', rate: 0.75 },
+    { value: 'normal', rate: 1 },
+    { value: 'fast', rate: 1.25 },
+    { value: 'very fast', rate: 1.5 }
+  ];
 
   useEffect(() => {
     const sampleRaw = localStorage.getItem('sample');
@@ -37,6 +46,7 @@ const EditAudio = () => {
     }
   }, []);
 
+  // Setup audio analyser for visualization
   useEffect(() => {
     if (audioRef.current && !analyserRef.current) {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -52,6 +62,26 @@ const EditAudio = () => {
       setAnalyser(analyserNode);
     }
   }, [proxyUrl]);
+
+  const handleTempoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value);
+    const selectedTempo = tempoOptions[value];
+    setTempo(selectedTempo.value);
+    
+    // Apply the playback rate directly to the audio element
+    if (audioRef.current) {
+      audioRef.current.playbackRate = selectedTempo.rate;
+      
+      // Save to localStorage
+      const sampleRaw = localStorage.getItem('sample');
+      if (sampleRaw) {
+        const sample = JSON.parse(sampleRaw);
+        sample.tempo = selectedTempo.value;
+        sample.playbackRate = selectedTempo.rate;
+        localStorage.setItem('sample', JSON.stringify(sample));
+      }
+    }
+  };
 
   return (
     <>
@@ -73,9 +103,17 @@ const EditAudio = () => {
           </div>
           <div className='edit-audio'>
             <div className='edit'>
-              <h2>140 BPM</h2>
-              <div className='bpm-slider'>
-                <p>slider</p>
+              <h2>Tempo: {tempo.charAt(0).toUpperCase() + tempo.slice(1)}</h2>
+              <div className='tempo-slider'>
+                <input
+                  type="range"
+                  min="0"
+                  max="4"
+                  step="1"
+                  value={tempoOptions.findIndex(option => option.value === tempo)}
+                  onChange={handleTempoChange}
+                  className="slider"
+                />
               </div>
             </div>
             <div className='edit'>
@@ -93,7 +131,12 @@ const EditAudio = () => {
           </div>
           <div className="test-sound">
             {proxyUrl && (
-              <audio controls ref={audioRef} crossOrigin="anonymous">
+              <audio 
+                loop 
+                controls 
+                ref={audioRef} 
+                crossOrigin="anonymous"
+              >
                 <source src={proxyUrl} type="audio/mp3" />
               </audio>
             )}
