@@ -23,6 +23,7 @@
     "three": "^0.176.0",
     "three-custom-shader-material": "^6.3.6",
     "three-stdlib": "^2.36.0",
+    "tone": "^15.1.22",
     "vite-plugin-glsl": "^1.4.1"
   },
   "devDependencies": {

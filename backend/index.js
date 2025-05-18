@@ -72,7 +72,6 @@ app.post("/generate", async (req, res) => {
   }
 });
 
-// 🔁 Proxy route to allow CORS-safe audio playback for Web Audio API
 app.get("/proxy-audio", async (req, res) => {
   const audioUrl = req.query.url;
   if (!audioUrl) return res.status(400).send("Missing audio URL");
